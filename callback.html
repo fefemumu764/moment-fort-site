@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>TikTok authorization · Moment Fort</title>
+<link rel="icon" href="logo.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <header><img src="logo.png" alt="Moment Fort logo"><a href="./">Moment Fort</a></header>
+
+  <h1 id="title">TikTok authorization</h1>
+  <p id="msg">Waiting for TikTok…</p>
+
+  <div class="card" id="box" hidden>
+    <p>Copy this address and paste it into the Moment Fort tool on your computer:</p>
+    <textarea id="url" readonly></textarea>
+    <p><button id="copy" type="button">Copy</button> <span id="copied" class="muted"></span></p>
+  </div>
+
+  <footer>
+    <a href="terms.html">Terms of Service</a>
+    <a href="privacy.html">Privacy Policy</a>
+  </footer>
+</main>
+<script>
+  // Nothing is sent anywhere: the code stays in this page and is copied by the user.
+  const q = new URLSearchParams(location.search);
+  const title = document.getElementById("title");
+  const msg = document.getElementById("msg");
+  if (q.get("code")) {
+    title.textContent = "Authorization complete ✓";
+    msg.textContent = "TikTok has authorized Moment Fort.";
+    document.getElementById("box").hidden = false;
+    const field = document.getElementById("url");
+    field.value = location.href;
+    document.getElementById("copy").onclick = async () => {
+      field.select();
+      try { await navigator.clipboard.writeText(field.value); } catch (e) { document.execCommand("copy"); }
+      document.getElementById("copied").textContent = "Copied.";
+    };
+  } else if (q.get("error")) {
+    title.textContent = "Authorization cancelled";
+    msg.textContent = "TikTok returned: " + (q.get("error_description") || q.get("error"));
+  } else {
+    msg.textContent = "This page receives the TikTok authorization for the Moment Fort tool.";
+  }
+</script>
+</body>
+</html>
